@@ -15,8 +15,8 @@ class User(BaseModel):
 
 class Station(BaseModel):
     device_id = CharField()
-    name = CharField()
-    location = CharField()
+    name = CharField(null=True)
+    location = CharField(null=True)
     longitude = CharField(null=True)
     latitude = CharField(null=True)
     last_seen = DateTimeField(null=True)
@@ -33,3 +33,4 @@ class Measurement(BaseModel):
     snow = IntegerField(null=True)
     rain = IntegerField(null=True)
     battery = IntegerField(null=True)
+
