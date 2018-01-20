@@ -3,19 +3,20 @@
 import socket
 import struct
 import ctypes
-import sys
+import sys, os
 import datetime
 import json
 import time
 from peewee import *
-from unicorn_sever.models import Station, Measurement, db
-from unicorn_sever.structs import UnicornProto
+sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/..")
+from models import Station, Measurement, db
+from structs import UnicornProto
 
 HOST = ''   # Symbolic name meaning all available interfaces
 PORT = 8888 # Arbitrary non-privileged port
 
 # make sure DB is inited
-db.create_tables([User, Station, Measurement], safe=True)
+db.create_tables([Station, Measurement], safe=True)
 
 # Datagram (udp) socket
 try :
@@ -48,7 +49,7 @@ while 1:
 
     # send back the reply
     reply = get_reply(measured)
-    s.sendto(reply)
+    s.sendto(reply, addr)
 
 s.close()
 
@@ -89,4 +90,4 @@ def get_reply(measured):
     ts = int(time.time())
     if last:
         ts = last.timestamp
-    return ctypes.c_ulong(ts), addr)
+    return ctypes.c_ulong(ts)
