@@ -18,40 +18,42 @@ PORT = 8888 # Arbitrary non-privileged port
 # make sure DB is inited
 db.create_tables([Station, Measurement], safe=True)
 
-# Datagram (udp) socket
-try :
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    print 'Socket created'
-except socket.error, msg :
-    print 'Failed to create socket. Error Code : ' + str(msg[0]) + ' Message ' + msg[1]
-    sys.exit()
 
-# Bind socket to local host and port
-try:
-    s.bind((HOST, PORT))
-except socket.error , msg:
-    print 'Bind failed. Error Code : ' + str(msg[0]) + ' Message ' + msg[1]
-    sys.exit()
+def udp_loop():
+    # Datagram (udp) socket
+    try :
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        print 'Socket created'
+    except socket.error, msg :
+        print 'Failed to create socket. Error Code : ' + str(msg[0]) + ' Message ' + msg[1]
+        sys.exit()
 
-print 'Socket bind complete'
+    # Bind socket to local host and port
+    try:
+        s.bind((HOST, PORT))
+    except socket.error , msg:
+        print 'Bind failed. Error Code : ' + str(msg[0]) + ' Message ' + msg[1]
+        sys.exit()
 
-#now keep talking with the client
-while 1:
-    # receive data from client (data, addr)
-    d = s.recvfrom(1024)
-    data = d[0]
-    addr = d[1]
-     
-    if not data: 
-        break
-     
-    measured = process_data(data)
+    print 'Socket bind complete'
 
-    # send back the reply
-    reply = get_reply(measured)
-    s.sendto(reply, addr)
+    #now keep talking with the client
+    while 1:
+        # receive data from client (data, addr)
+        d = s.recvfrom(1024)
+        data = d[0]
+        addr = d[1]
+         
+        if not data: 
+            break
+         
+        measured = process_data(data)
 
-s.close()
+        # send back the reply
+        reply = get_reply(measured)
+        s.sendto(reply, addr)
+
+    s.close()
 
 
 def process_data(data):
@@ -91,3 +93,6 @@ def get_reply(measured):
     if last:
         ts = last.timestamp
     return ctypes.c_ulong(ts)
+
+
+udp_loop()
