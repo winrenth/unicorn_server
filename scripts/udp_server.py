@@ -72,15 +72,15 @@ def process_data(data):
     # store parsed data into DB
     measured = Measurement.create(
         station=station,
-        timestamp = proto.timestamp,
-        temperature = proto.temperature,
-        humidity = proto.humidity,
-        pressure = proto.pressure,
-        CO2 = proto.CO2,
-        light = proto.light,
-        snow = proto.snow_intensity,
-        rain = proto.rain_intensity,
-        battery = proto.battery,
+        timestamp=proto.timestamp,
+        temperature=proto.temperature,
+        humidity=proto.humidity,
+        pressure=proto.pressure,
+        CO2=proto.CO2,
+        light=proto.light,
+        snow=proto.snow_intensity,
+        rain=proto.rain_intensity,
+        battery=proto.battery,
     )
 
     return measured
