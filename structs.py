@@ -11,7 +11,7 @@ class UnicornProto(ctypes.Structure):
             ("CO2", ctypes.c_float),
             ("light", ctypes.c_short),
             ("battery", ctypes.c_ubyte),
-            ("snow_intensity", ctypes.c_short),
-            ("rain_intensity", ctypes.c_short),
+            ("snow_intensity", ctypes.c_ushort),
+            ("rain_intensity", ctypes.c_ushort),
             ("result", ctypes.c_short),
     ]
