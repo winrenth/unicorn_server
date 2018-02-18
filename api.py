@@ -219,7 +219,17 @@ class MeasurementResource(object):
         resp.location = '/%s/things/%s' % (user_id, proper_thing['id'])
 
 
-cors = CORS(allow_origins_list=['http://localhost:3000', 'localhost:3000', 'http://localhost:8000', 'localhost:8000', ], allow_all_methods=True, allow_all_headers=True)
+cors = CORS(
+    allow_origins_list=[
+        'http://localhost:3000',
+        'localhost:3000',
+        'http://localhost:8000',
+        'localhost:8000',
+        'http://weather.lafiel.net',
+    ],
+    allow_all_methods=True,
+    allow_all_headers=True
+)
 
 app = falcon.API(middleware=[
     cors.middleware,
