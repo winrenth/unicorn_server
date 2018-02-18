@@ -84,7 +84,6 @@
         RAD_TO_DEG = 180 / Math.PI;
 
     function getRotationFromAccel(accelX, accelY, accelZ) {
-        /* Reference: http://stackoverflow.com/questions/3755059/3d-accelerometer-calculate-the-orientation#answer-30195572 */
         const sign = accelZ > 0 ? 1 : -1;
         const miu = 0.001;
 

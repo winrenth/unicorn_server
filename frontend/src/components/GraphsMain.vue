@@ -6,6 +6,7 @@
                     :key="prop"
                     :name='prop'
                     :results='m'
+                    :stations='stations'
             ></graph-card>
         </div>
     </div>
@@ -29,7 +30,12 @@
                 interval: null,
                 stations: [],
                 measured: {
-                    'temperature': []
+                    'temperature': [],
+                    'pressure': [],
+                    'humidity': [],
+                    'light': [],
+                    'battery': [],
+                    'CO2': []
                 },
                 bar: {
                     waiting: 0,
@@ -53,72 +59,78 @@
                     .catch(e => {
                         console.log(e);
                         // this.errors.push(e)
-                        let fakeData = {
-                            Calls: [1, 2],
-                            Summary: {
-                                Calls: 3,
-                                Available: 0,
-                                WaitTime: 0,
-                                TalkTime: 0
-                            },
-                            Members: [
-                                {Name: 109, Status: 1},
-                                {Name: 101, Status: 2},
-                                {Name: 102, Status: 3}
-                            ]
-                        };
+                        let fakeData = {};
                         this.processResponse(fakeData)
                     })
             },
             processResponse(data) {
                 this.stations = [];
                 let that = this;
-                console.log(data);
-
+                this.measured.temperature = [];
                 _.each(data, function (station) {
                     station.results = [];
                     that.$http.get(`${apiResults}/${station.name}`, data = {data})
                         .then(response => {
                             // JSON responses are automatically parsed.
                             station.results.push(response.data);
-                            that.getMeasuredSeries(response.data);
+                            that.getMeasuredSeries(response.data, that.stations.length - 1);
                         }).catch(e => {
                             console.log(e);
                             // that.errors.push(e)
                         });
                     that.stations.push(station);
                 })
-                /*
-                for (let member of data.Members) {
-                  this.$root.db.get(`user_${member.Name}`).catch(function (err) {
-                    if (err.name === 'not_found') {
-                      return {
-                        name: 'Unknown', photo: require('assets/dummy.jpg')
-                      };
-                    } else {
-                      throw err;
-                    }
-                  }).then(function (user) {
-                    that.$root.db.get(`status_${member.Status}`).then(function (status) {
-                      that.cards.push({
-                        ...user,
-                        ...status
-                      })
-                    })
-                  }).catch(function (err) {
-                    console.log(err)
-                  });
-                }
-                */
             },
-            getMeasuredSeries(data) {
+            getMeasuredSeries(data, station_no) {
                 let temp = _.chain(data)
                     .map(_.partialRight(_.pick, 'timestamp', 'temperature'))
                     .value();
+                let pressure = _.chain(data)
+                    .map(_.partialRight(_.pick, 'timestamp', 'pressure'))
+                    .value();
+                let humidity = _.chain(data)
+                    .map(_.partialRight(_.pick, 'timestamp', 'humidity'))
+                    .value();
+                let light = _.chain(data)
+                    .map(_.partialRight(_.pick, 'timestamp', 'light'))
+                    .value();
+                let battery = _.chain(data)
+                    .map(_.partialRight(_.pick, 'timestamp', 'battery'))
+                    .value();
+                let CO2 = _.chain(data)
+                    .map(_.partialRight(_.pick, 'timestamp', 'CO2'))
+                    .value();
                 let name = data[0].name;
-                this.measured.temperature.push({
-                    name: temp
-                });
+                if (this.measured.temperature[station_no]) {
+                    this.measured.temperature[station_no] = temp;
+                } else {
+                    this.measured.temperature.push(temp);
+                }
+                if (this.measured.pressure[station_no]) {
+                    this.measured.pressure[station_no] = pressure;
+                } else {
+                    this.measured.pressure.push(pressure);
+                }
+                if (this.measured.humidity[station_no]) {
+                    this.measured.humidity[station_no] = humidity;
+                } else {
+                    this.measured.humidity.push(humidity);
+                }
+                if (this.measured.light[station_no]) {
+                    this.measured.light[station_no] = light;
+                } else {
+                    this.measured.light.push(light);
+                }
+                if (this.measured.battery[station_no]) {
+                    this.measured.battery[station_no] = battery;
+                } else {
+                    this.measured.battery.push(battery);
+                }
+                if (this.measured.CO2[station_no]) {
+                    this.measured.CO2[station_no] = CO2;
+                } else {
+                    this.measured.CO2.push(CO2);
+                }
             }
         },
         mounted() {
@@ -126,7 +138,7 @@
 
             this.interval = setInterval(function () {
                 this.loadData();
-            }.bind(this), 3000);
+            }.bind(this), 30000);
         },
 
         beforeDestroy() {
@@ -137,6 +149,6 @@
 
 <style lang='stylus' scoped>
     .card
-        width: 15%
+        width: 48%
         min-width: 300px
 </style>

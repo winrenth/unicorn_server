@@ -173,8 +173,8 @@ class MeasurementResource(object):
                     Station.name,
                     Station.id,
                 ).join(Station).where(Station.name == name).order_by(
-                    Measurement.timestamp.asc()
-                ).limit(100).dicts())
+                    Measurement.timestamp.desc()
+                ).limit(100).dicts())[::-1]
             else:
                 result = list(Measurement.select(
                     Measurement.timestamp,
@@ -188,7 +188,7 @@ class MeasurementResource(object):
                     Measurement.battery,
                     Station.name,
                     Station.id,
-                ).join(Station).order_by(Measurement.timestamp.asc()).limit(200).dicts())
+                ).join(Station).order_by(Measurement.timestamp.desc()).limit(200).dicts())[::-1]
         except Exception as ex:
             self.logger.error(ex)
             print ex
