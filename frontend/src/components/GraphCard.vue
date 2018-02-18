@@ -125,6 +125,8 @@
                 _.each(this.results, function(dataset) {
                     if (!that.chartData.datasets[i]) {
                         that.chartData.datasets.push({data: []});
+                    } else {
+                        that.chartData.datasets[i].data = [];
                     }
                     that.chartData.datasets[i].label = that.stations[i].name;
                     let j = 0;
