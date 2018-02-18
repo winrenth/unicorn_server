@@ -17,7 +17,7 @@ import axios from 'axios'
 
 Vue.config.productionTip = false;
 Vue.use(Quasar); // Install Quasar Framework
-Vue.prototype.$http = axios.create({baseURL: 'http://localhost:8000'});
+Vue.prototype.$http = axios.create({baseURL: 'http://weather.lafiel.net'});
 
 if (__THEME === 'mat') {
     require('quasar-extras/roboto-font')
